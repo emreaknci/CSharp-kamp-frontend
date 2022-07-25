@@ -39,11 +39,31 @@ export class ProductAddComponent implements OnInit {
           this.toastrService.success(response.message, 'Başarılı!');
         },
         (responseError) => {
-          if (responseError.error.ValidationErrors.length > 0) {
-            for (let i = 0; i < responseError.error.ValidationErrors.length;i++)
-             {
-              this.toastrService
-              .error(responseError.error.ValidationErrors[i].ErrorMessage,'Doğrulama hatası!');
+          console.log(responseError);
+          if (responseError.error.ValidationErrors) {
+            if (responseError.error.ValidationErrors.length > 0) {
+              for (
+                let i = 0;
+                i < responseError.error.ValidationErrors.length;
+                i++
+              ) {
+                this.toastrService.error(
+                  responseError.error.ValidationErrors[i].ErrorMessage,
+                  'Doğrulama hatası!'
+                );
+              }
+            }
+          } else {
+            if (localStorage.getItem('token')) {
+              this.toastrService.error(
+                responseError.error.message,
+                'Yetki Hatası!'
+              );
+            } else {
+              this.toastrService.error(
+                'Ürün ekleyebilmek için lütfen giriş yapınız.',
+                'Hata!'
+              );
             }
           }
         }
